@@ -1,10 +1,11 @@
 from android import R
 from android.app import AlertDialog
-from android.content import DialogInterface
+from android.content import DialogInterface, ClipboardManager, ClipData
 from android.widget import EditText
 from android.text import InputType
 from android.content import Context
-from java import dynamic_proxy
+from android.widget import Toast
+from java import dynamic_proxy, cast
 
 import toga
 
@@ -229,3 +230,47 @@ class SelectFolderDialog(BaseDialog):
 
         toga.App.app.factory.not_implemented("dialogs.SelectFolderDialog()")
         self.native = None
+
+
+class CopyText():
+    def __init__(
+        self,
+        text,
+        message,
+    ):
+        super().__init__()
+
+        self.clipboard_manager = None
+        context = toga.App.app.current_window._impl.app.native
+        clipboard_service = context.getSystemService(
+            context.CLIPBOARD_SERVICE
+        )
+        self.clipboard_manager = cast(
+            ClipboardManager,
+            clipboard_service
+        )
+        clip_data = ClipData.newPlainText("button", text)
+        self.clipboard_manager.setPrimaryClip(clip_data)
+        toast = Toast.makeText(context, message, Toast.LENGTH_SHORT)
+        toast.show()
+
+
+
+class PasteText():
+    def __init__(
+        self
+    ):
+        super().__init__()
+
+        self.clipboard_manager = None
+        context = toga.App.app.current_window._impl.app.native
+        clipboard_service = context.getSystemService(
+            context.CLIPBOARD_SERVICE
+        )
+        self.clipboard_manager = cast(
+            ClipboardManager,
+            clipboard_service
+        )
+        if self.clipboard_manager.hasPrimaryClip():
+            clip_data = self.clipboard_manager.getPrimaryClip()
+            clip_data.getItemAt(0).getText()
