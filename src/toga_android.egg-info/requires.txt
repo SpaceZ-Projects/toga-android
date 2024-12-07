@@ -1,0 +1,1 @@
+git+https://github.com/ezzygarmyz/toga-core.git@v0.4.8
