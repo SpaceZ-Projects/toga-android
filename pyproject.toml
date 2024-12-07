@@ -60,7 +60,7 @@ root = ".."
 
 [tool.setuptools_dynamic_dependencies]
 dependencies = [
-    "toga-core == {version}",
+    "git+https://github.com/ezzygarmyz/toga-core.git@v0.4.8",
 ]
 
 [tool.coverage.run]
