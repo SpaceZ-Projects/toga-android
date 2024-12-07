@@ -104,6 +104,40 @@ class InputDialog(TextDialog):
             )
 
 
+class PasswordDialog(InputDialog):
+    def __init__(
+        self,
+        title,
+        message,
+        positive_text="OK",
+        negative_text="Cancel",
+        initial_text="",
+    ):
+        super().__init__(
+            title=title,
+            message=message,
+            positive_text=positive_text,
+            negative_text=negative_text,
+            initial_text=initial_text,
+        )
+
+        self.input_field.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD)
+
+    def completion_handler(self, return_value: bool) -> None:
+        if return_value:
+            password = self.input_field.getText().toString()
+            self.future.set_result(password)  
+        else:
+            self.future.set_result(None)
+
+        context = toga.App.app.current_window._impl.app.native
+        input_method_manager = context.getSystemService(Context.INPUT_METHOD_SERVICE)
+        if input_method_manager:
+            input_method_manager.hideSoftInputFromWindow(
+                self.input_field.getWindowToken(), 0
+            )
+
+
 class InfoDialog(TextDialog):
     def __init__(self, title, message):
         super().__init__(
