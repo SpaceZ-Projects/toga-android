@@ -1,6 +1,9 @@
 from android import R
 from android.app import AlertDialog
 from android.content import DialogInterface
+from android.widget import EditText
+from android.text import InputType
+from android.content import Context
 from java import dynamic_proxy
 
 import toga
@@ -61,6 +64,44 @@ class TextDialog(BaseDialog):
 
     def completion_handler(self, return_value: bool) -> None:
         self.future.set_result(return_value)
+
+
+class InputDialog(TextDialog):
+    def __init__(
+        self,
+        title,
+        message,
+        positive_text="OK",
+        negative_text="Cancel",
+        initial_text=""
+    ):
+        super().__init__(
+            title=title,
+            message=message,
+            positive_text=positive_text,
+            negative_text=negative_text,
+        )
+        
+        
+        self.input_field = EditText(toga.App.app.current_window._impl.app.native)
+        self.input_field.setText(initial_text)
+        self.input_field.setInputType(InputType.TYPE_CLASS_TEXT)
+        
+        self.native.setView(self.input_field)
+
+    def completion_handler(self, return_value: bool) -> None:
+        if return_value:
+            input_text = self.input_field.getText().toString()
+            self.future.set_result(input_text)
+        else:
+            self.future.set_result(None)
+
+        context = toga.App.app.current_window._impl.app.native
+        input_method_manager = context.getSystemService(Context.INPUT_METHOD_SERVICE)
+        if input_method_manager:
+            input_method_manager.hideSoftInputFromWindow(
+                self.input_field.getWindowToken(), 0
+            )
 
 
 class InfoDialog(TextDialog):
