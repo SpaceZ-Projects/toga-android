@@ -1,10 +1,8 @@
 from android import R
 from android.app import AlertDialog
-from android.content import DialogInterface, ClipboardManager, ClipData
-from android.widget import EditText
+from android.content import Context, DialogInterface, ClipboardManager, ClipData
+from android.widget import EditText, Toast
 from android.text import InputType
-from android.content import Context
-from android.widget import Toast
 from java import dynamic_proxy, cast
 
 import toga
